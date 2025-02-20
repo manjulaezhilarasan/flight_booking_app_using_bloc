@@ -1,6 +1,4 @@
-import 'package:flight_booking_app_using_bloc/login_screen/bloc/login_page_bloc.dart';
-import 'package:flight_booking_app_using_bloc/login_screen/bloc/login_page_event.dart';
-import 'package:flight_booking_app_using_bloc/login_screen/bloc/login_page_state.dart';
+import 'package:flight_booking_app_using_bloc/login_screen/bloc/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -23,191 +21,192 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: BlocConsumer<LoginBloc, LoginState>(
+        listenWhen: (previous, current) => previous != current,
+        listener: (context, state) {
+          if (state.status == LoginStatus.success) {}
+          if (state.status == LoginStatus.failure) {}
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0),
+            child: Stack(
               children: [
-                Row(
-                  children: [
-                    Text(
-                      "fly",
-                      style: TextStyle(
-                        fontSize: 48.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.60,
+                    child: Column(
+                      spacing: 20.0,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "fly",
+                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                            SvgPicture.asset(
+                              "assets/images/flight.svg",
+                              width: 32.0,
+                              height: 32.0,
+                            ),
+                            Text(
+                              "t",
+                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "Let's get you Login!",
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        Text(
+                          "Enter your information below",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            socialLoginButton("Google", "assets/images/google.svg"),
+                            SizedBox(width: 16.0),
+                            socialLoginButton("Facebook", "assets/images/facebook.svg"),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(thickness: 1, color: Colors.grey.shade300),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text("Or Login With"),
+                            ),
+                            Expanded(
+                              child: Divider(thickness: 1, color: Colors.grey.shade300),
+                            ),
+                          ],
+                        ),
+                        FormBuilder(
+                          key: _formKey,
+                          onChanged: () {
+                            _formKey.currentState?.save();
+                            context.read<LoginBloc>().add(OnChangeFormValue(_formKey.currentState!.value));
+                          },
+                          child: Column(
+                            children: [
+                              FormBuilderTextField(
+                                name: 'email',
+                                initialValue: state.loginReqModel?.email,
+                                decoration: InputDecoration(
+                                  labelText: "Enter Email",
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.email),
+                                ),
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(errorText: "Email is required"),
+                                  FormBuilderValidators.email(errorText: "Enter a valid email"),
+                                ]),
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              SizedBox(
+                                height: 16.0,
+                              ),
+                              FormBuilderTextField(
+                                name: "password",
+                                initialValue: state.loginReqModel?.password,
+                                obscureText: _obscurePassword,
+                                decoration: InputDecoration(
+                                    labelText: "Enter Password",
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(Icons.lock),
+                                    suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                                    )),
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(errorText: "Password is required"),
+                                  FormBuilderValidators.minLength(8, errorText: "Password must be at least 8 characters")
+                                ]),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            child: Text("Forget Password?",
+                                style: TextStyle(
+                                  color: Color(0xff931158),
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        ),
+                        BlocBuilder<LoginBloc, LoginState>(
+                          builder: (context, state) {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xff931158),
+                                minimumSize: const Size(double.infinity, 48.0),
+                              ),
+                              onPressed: state.status == LoginStatus.loading
+                                  ? null
+                                  : () {
+                                      if (_formKey.currentState!.saveAndValidate()) {
+                                        context.read<LoginBloc>().add(SubmitLogin());
+                                      }
+                                    },
+                              child: state.status == LoginStatus.loading
+                                  ? CircularProgressIndicator(color: Colors.white)
+                                  : Text(
+                                      "Login",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    SvgPicture.asset(
-                      "assets/images/flight.svg",
-                      width: 32.0,
-                      height: 32.0,
-                    ),
-                    Text(
-                      "t",
-                      style: TextStyle(
-                        fontSize: 48.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  "Let's get you Login!",
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text(
-                  "Enter your information below",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    socialLoginButton("Google", "assets/images/google.svg"),
-                    SizedBox(width: 16.0),
-                    socialLoginButton("Facebook", "assets/images/facebook.svg"),
-                  ],
-                ),
-                SizedBox(height: 20.0),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Divider(thickness: 1, color: Colors.grey.shade300),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text("Or Login With"),
-                    ),
-                    Expanded(
-                      child: Divider(thickness: 1, color: Colors.grey.shade300),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20.0),
-                FormBuilder(
-                  key: _formKey,
-                  child: Column(
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FormBuilderTextField(
-                        name: 'email',
-                        decoration: InputDecoration(
-                          labelText: "Enter Email",
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.email),
-                        ),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(
-                              errorText: "Email is required"),
-                          FormBuilderValidators.email(
-                              errorText: "Enter a valid email"),
-                        ]),
-                        keyboardType: TextInputType.emailAddress,
-                      ),
+                      Text("Don't have an account?"),
                       SizedBox(
-                        height: 16.0,
+                        width: 10.0,
                       ),
-                      FormBuilderTextField(
-                        name: "password",
-                        obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                            labelText: "Enter Password",
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                              icon: Icon(_obscurePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                            )),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(
-                              errorText: "Password is required"),
-                          FormBuilderValidators.minLength(8,
-                              errorText:
-                                  "Password must be at least 8 characters")
-                        ]),
+                      GestureDetector(
+                        onTap: () => context.go('/register'),
+                        child: Text(
+                          "Register Now",
+                          style: TextStyle(color: Color(0xff931158), fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    child: Text("Forget Password?",
-                        style: TextStyle(
-                          color: Color(0xff931158),
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                BlocBuilder<LoginPageBloc, LoginPageState>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xff931158),
-                        minimumSize: const Size(double.infinity, 48.0),
-                      ),
-                      onPressed: state.status == LoginPageStatus.loading
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.saveAndValidate()) {
-                                context
-                                    .read<LoginPageBloc>()
-                                    .add(SubmitLogin());
-                              }
-                            },
-                      child: state.status == LoginPageStatus.loading
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              "Login",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: 158.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Don't have an account?"),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                    GestureDetector(
-                      onTap: () => context.go('/register'),
-                      child: Text(
-                        "Register Now",
-                        style: TextStyle(
-                            color: Color(0xff931158),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
