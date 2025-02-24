@@ -7,14 +7,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-class LoginMobilePage extends StatefulWidget {
-  const LoginMobilePage({super.key});
+class LoginMobile extends StatefulWidget {
+  const LoginMobile({super.key});
 
   @override
-  State<LoginMobilePage> createState() => _LoginMobilePageState();
+  State<LoginMobile> createState() => _LoginMobileState();
 }
 
-class _LoginMobilePageState extends State<LoginMobilePage> {
+class _LoginMobileState extends State<LoginMobile> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _obscurePassword = true;
 
@@ -30,7 +30,8 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
         },
         builder: (context, state) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
             child: Stack(
               children: [
                 Align(
@@ -38,14 +39,17 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                   child: SizedBox(
                     height: MediaQuery.sizeOf(context).height * 0.60,
                     child: Column(
-                      spacing: 20.0,
+                      spacing: 14.0,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             Text(
                               "fly",
-                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -56,8 +60,12 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                             ),
                             Text(
                               "t",
-                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -65,36 +73,46 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                         ),
                         Text(
                           "Let's get you Login!",
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
                                 color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
                         Text(
                           "Enter your information below",
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
                                 color: Theme.of(context).colorScheme.outline,
                               ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            socialLoginButton("Google", "assets/images/google.svg"),
+                            socialLoginButton(
+                                "Google", "assets/images/google.svg"),
                             SizedBox(width: 16.0),
-                            socialLoginButton("Facebook", "assets/images/facebook.svg"),
+                            socialLoginButton(
+                                "Facebook", "assets/images/facebook.svg"),
                           ],
                         ),
                         Row(
                           children: [
                             Expanded(
-                              child: Divider(thickness: 1, color: Colors.grey.shade300),
+                              child: Divider(
+                                  thickness: 1, color: Colors.grey.shade300),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text("Or Login With"),
                             ),
                             Expanded(
-                              child: Divider(thickness: 1, color: Colors.grey.shade300),
+                              child: Divider(
+                                  thickness: 1, color: Colors.grey.shade300),
                             ),
                           ],
                         ),
@@ -102,7 +120,8 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                           key: _formKey,
                           onChanged: () {
                             _formKey.currentState?.save();
-                            context.read<LoginBloc>().add(OnChangeFormValue(_formKey.currentState!.value));
+                            context.read<LoginBloc>().add(OnChangeFormValue(
+                                _formKey.currentState!.value));
                           },
                           child: Column(
                             children: [
@@ -115,8 +134,10 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                                   prefixIcon: Icon(Icons.email),
                                 ),
                                 validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(errorText: "Email is required"),
-                                  FormBuilderValidators.email(errorText: "Enter a valid email"),
+                                  FormBuilderValidators.required(
+                                      errorText: "Email is required"),
+                                  FormBuilderValidators.email(
+                                      errorText: "Enter a valid email"),
                                 ]),
                                 keyboardType: TextInputType.emailAddress,
                               ),
@@ -137,11 +158,16 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                                           _obscurePassword = !_obscurePassword;
                                         });
                                       },
-                                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                                      icon: Icon(_obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility),
                                     )),
                                 validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(errorText: "Password is required"),
-                                  FormBuilderValidators.minLength(8, errorText: "Password must be at least 8 characters")
+                                  FormBuilderValidators.required(
+                                      errorText: "Password is required"),
+                                  FormBuilderValidators.minLength(8,
+                                      errorText:
+                                          "Password must be at least 8 characters")
                                 ]),
                               ),
                             ],
@@ -167,12 +193,16 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                               onPressed: state.status == LoginStatus.loading
                                   ? null
                                   : () {
-                                      if (_formKey.currentState!.saveAndValidate()) {
-                                        context.read<LoginBloc>().add(SubmitLogin());
+                                      if (_formKey.currentState!
+                                          .saveAndValidate()) {
+                                        context
+                                            .read<LoginBloc>()
+                                            .add(SubmitLogin());
                                       }
                                     },
                               child: state.status == LoginStatus.loading
-                                  ? CircularProgressIndicator(color: Colors.white)
+                                  ? CircularProgressIndicator(
+                                      color: Colors.white)
                                   : Text(
                                       "Login",
                                       style: TextStyle(color: Colors.white),
@@ -194,10 +224,14 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
                         width: 10.0,
                       ),
                       GestureDetector(
-                        onTap: () => context.go('/register'),
+                        onTap: () {
+                          GoRouter.of(context).go('/registration');
+                        },
                         child: Text(
                           "Register Now",
-                          style: TextStyle(color: Color(0xff931158), fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Color(0xff931158),
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
