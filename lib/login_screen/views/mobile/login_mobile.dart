@@ -25,13 +25,18 @@ class _LoginMobileState extends State<LoginMobile> {
       body: BlocConsumer<LoginBloc, LoginState>(
         listenWhen: (previous, current) => previous != current,
         listener: (context, state) {
-          if (state.status == LoginStatus.success) {}
-          if (state.status == LoginStatus.failure) {}
+          if (state.status == LoginStatus.success) {
+            GoRouter.of(context).go('/home');
+          }
+          if (state.status == LoginStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
         },
         builder: (context, state) {
           return Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
             child: Stack(
               children: [
                 Align(
@@ -46,10 +51,7 @@ class _LoginMobileState extends State<LoginMobile> {
                           children: [
                             Text(
                               "fly",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayMedium
-                                  ?.copyWith(
+                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -60,12 +62,8 @@ class _LoginMobileState extends State<LoginMobile> {
                             ),
                             Text(
                               "t",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayMedium
-                                  ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
+                              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -73,46 +71,36 @@ class _LoginMobileState extends State<LoginMobile> {
                         ),
                         Text(
                           "Let's get you Login!",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
                         Text(
                           "Enter your information below",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 color: Theme.of(context).colorScheme.outline,
                               ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            socialLoginButton(
-                                "Google", "assets/images/google.svg"),
+                            socialLoginButton("Google", "assets/images/google.svg"),
                             SizedBox(width: 16.0),
-                            socialLoginButton(
-                                "Facebook", "assets/images/facebook.svg"),
+                            socialLoginButton("Facebook", "assets/images/facebook.svg"),
                           ],
                         ),
                         Row(
                           children: [
                             Expanded(
-                              child: Divider(
-                                  thickness: 1, color: Colors.grey.shade300),
+                              child: Divider(thickness: 1, color: Colors.grey.shade300),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text("Or Login With"),
                             ),
                             Expanded(
-                              child: Divider(
-                                  thickness: 1, color: Colors.grey.shade300),
+                              child: Divider(thickness: 1, color: Colors.grey.shade300),
                             ),
                           ],
                         ),
@@ -120,8 +108,7 @@ class _LoginMobileState extends State<LoginMobile> {
                           key: _formKey,
                           onChanged: () {
                             _formKey.currentState?.save();
-                            context.read<LoginBloc>().add(OnChangeFormValue(
-                                _formKey.currentState!.value));
+                            context.read<LoginBloc>().add(OnChangeFormValue(_formKey.currentState!.value));
                           },
                           child: Column(
                             children: [
@@ -134,10 +121,8 @@ class _LoginMobileState extends State<LoginMobile> {
                                   prefixIcon: Icon(Icons.email),
                                 ),
                                 validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(
-                                      errorText: "Email is required"),
-                                  FormBuilderValidators.email(
-                                      errorText: "Enter a valid email"),
+                                  FormBuilderValidators.required(errorText: "Email is required"),
+                                  FormBuilderValidators.email(errorText: "Enter a valid email"),
                                 ]),
                                 keyboardType: TextInputType.emailAddress,
                               ),
@@ -158,16 +143,11 @@ class _LoginMobileState extends State<LoginMobile> {
                                           _obscurePassword = !_obscurePassword;
                                         });
                                       },
-                                      icon: Icon(_obscurePassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility),
+                                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                                     )),
                                 validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(
-                                      errorText: "Password is required"),
-                                  FormBuilderValidators.minLength(8,
-                                      errorText:
-                                          "Password must be at least 8 characters")
+                                  FormBuilderValidators.required(errorText: "Password is required"),
+                                  FormBuilderValidators.minLength(8, errorText: "Password must be at least 8 characters")
                                 ]),
                               ),
                             ],
@@ -183,50 +163,25 @@ class _LoginMobileState extends State<LoginMobile> {
                                 )),
                           ),
                         ),
-                        BlocConsumer<LoginBloc, LoginState>(
-                          listener: (context, state) {
-                            if (state.status == LoginStatus.success) {
-                              GoRouter.of(context).go('/home');
-                            } else if (state.status == LoginStatus.failure) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text("Invalid Email or Password")),
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            return BlocBuilder<LoginBloc, LoginState>(
-                              builder: (context, state) {
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xff931158),
-                                    minimumSize:
-                                        const Size(double.infinity, 48.0),
-                                  ),
-                                  onPressed: state.status == LoginStatus.loading
-                                      ? null
-                                      : () {
-                                          if (_formKey.currentState
-                                                  ?.saveAndValidate() ??
-                                              false) {
-                                            final formData =
-                                                _formKey.currentState!.value;
-                                            context
-                                                .read<LoginBloc>()
-                                                .add(SubmitLogin(formData));
-                                          }
-                                        },
-                                  child: state.status == LoginStatus.loading
-                                      ? CircularProgressIndicator(
-                                          color: Colors.white)
-                                      : Text(
-                                          "Login",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                );
-                              },
-                            );
-                          },
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xff931158),
+                            minimumSize: const Size(double.infinity, 48.0),
+                          ),
+                          onPressed: state.status == LoginStatus.loading
+                              ? null
+                              : () {
+                                  if (_formKey.currentState?.saveAndValidate() ?? false) {
+                                    final formData = _formKey.currentState!.value;
+                                    context.read<LoginBloc>().add(SubmitLogin(formData));
+                                  }
+                                },
+                          child: state.status == LoginStatus.loading
+                              ? CircularProgressIndicator(color: Colors.white)
+                              : Text(
+                                  "Login",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         ),
                       ],
                     ),
@@ -247,9 +202,7 @@ class _LoginMobileState extends State<LoginMobile> {
                         },
                         child: Text(
                           "Register Now",
-                          style: TextStyle(
-                              color: Color(0xff931158),
-                              fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Color(0xff931158), fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],

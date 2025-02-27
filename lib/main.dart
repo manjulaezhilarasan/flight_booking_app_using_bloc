@@ -27,6 +27,7 @@ class FlightBookingApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Flight Booking App Using BLoc',
       routerConfig: _router,
+      debugShowCheckedModeBanner: false,
       theme: UiHelper().themeData(Constants.LIGHTMODE),
     );
   }

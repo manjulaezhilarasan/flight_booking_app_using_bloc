@@ -18,88 +18,17 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
   final log = Logger();
   final _formKey = GlobalKey<FormBuilderState>();
 
-  final List<String> countries = [
-    'India',
-    'Bangladesh',
-    'Sri Lanka',
-    'Pakistan',
-    'Singapore',
-    'China',
-    'Nepal',
-    'Bhutan'
-  ];
+  final List<String> countries = ['India', 'Bangladesh', 'Sri Lanka', 'Pakistan', 'Singapore', 'China', 'Nepal', 'Bhutan'];
 
   final Map<String, List<String>> cities = {
-    'India': [
-      'Chennai',
-      'Goa',
-      'Bengaluru',
-      'Mumbai',
-      'Hydrabad',
-      'Kochin',
-      'Varanasi'
-    ],
-    'Bangladesh': [
-      'Dhaka',
-      'Chittagong',
-      'Khulna',
-      'Sylhet',
-      'Rajshahi',
-      'Barisal',
-      'Rangpur'
-    ],
-    'Sri Lanka': [
-      'Colombo',
-      'Kandy',
-      'Galle',
-      'Jaffna',
-      'Negombo',
-      'Anuradhapura'
-    ],
-    'Pakistan': [
-      'Karachi',
-      'Lahore',
-      'Islamabad',
-      'Rawalpindi',
-      'Faisalabad',
-      'Multan',
-      'Peshawar'
-    ],
-    'Singapore': [
-      'Orchand',
-      ' Tampines',
-      'Woodlands',
-      'Hougang',
-      'Punggol',
-      'Jurong'
-    ],
-    'China': [
-      'Beijing',
-      'Shanghai',
-      'Guangzhou',
-      'Shenzhen',
-      'Chengdu',
-      'Chongqing',
-      'Tianjin'
-    ],
-    'Nepal': [
-      'Kathmandu',
-      'Pokhara',
-      'Lalitpur',
-      'Bhaktapur',
-      'Biratnagar',
-      'Janakpur',
-      'Dharan'
-    ],
-    'Bhutan': [
-      'Thimphu',
-      'Paro',
-      'Punakha',
-      'Phuentsholing',
-      'Gelephu',
-      'Samtse',
-      'Mongar'
-    ],
+    'India': ['Chennai', 'Goa', 'Bengaluru', 'Mumbai', 'Hydrabad', 'Kochin', 'Varanasi'],
+    'Bangladesh': ['Dhaka', 'Chittagong', 'Khulna', 'Sylhet', 'Rajshahi', 'Barisal', 'Rangpur'],
+    'Sri Lanka': ['Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo', 'Anuradhapura'],
+    'Pakistan': ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan', 'Peshawar'],
+    'Singapore': ['Orchand', ' Tampines', 'Woodlands', 'Hougang', 'Punggol', 'Jurong'],
+    'China': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Chongqing', 'Tianjin'],
+    'Nepal': ['Kathmandu', 'Pokhara', 'Lalitpur', 'Bhaktapur', 'Biratnagar', 'Janakpur', 'Dharan'],
+    'Bhutan': ['Thimphu', 'Paro', 'Punakha', 'Phuentsholing', 'Gelephu', 'Samtse', 'Mongar'],
   };
 
   String? selectedCountry = 'India';
@@ -113,7 +42,8 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
         listenWhen: (previous, current) => previous != current,
         listener: (context, state) {
           if (state.status == RegistrationStatus.success) {
-            log.d("Registration Successful!");
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Registration Successful!")));
+            GoRouter.of(context).go('/');
           }
           if (state.status == RegistrationStatus.failure) {
             log.e("Registration Failed: ${state.message}");
@@ -121,27 +51,20 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
         },
         builder: (context, state) {
           return Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
-            child: Stack(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
+            child: Column(
               children: [
-                SingleChildScrollView(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.80,
-                      child: Column(
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Wrap(
                         spacing: 14.0,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Text(
                                 "fly",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displayLarge
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.displayLarge?.copyWith(
                                       fontWeight: FontWeight.w600,
                                     ),
                               ),
@@ -152,28 +75,19 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                               ),
                               Text(
                                 "t",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displayMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.displayMedium?.copyWith(
                                       fontWeight: FontWeight.w600,
                                     ),
                               ),
                             ],
                           ),
                           Text("Register Now!",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineMedium
-                                  ?.copyWith(
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                     fontWeight: FontWeight.w800,
                                   )),
                           Text(
                             "Enter your information below",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                   color: Theme.of(context).colorScheme.outline,
                                 ),
                           ),
@@ -181,9 +95,7 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                             key: _formKey,
                             onChanged: () {
                               _formKey.currentState?.save();
-                              context.read<RegistrationBloc>().add(
-                                  OnChangeFormValue(
-                                      _formKey.currentState!.value));
+                              context.read<RegistrationBloc>().add(OnChangeFormValue(_formKey.currentState!.value));
                             },
                             child: Column(
                               children: [
@@ -205,8 +117,7 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                                 ),
                                 FormBuilderTextField(
                                   name: "email address",
-                                  initialValue:
-                                      state.registrationRegModel.email,
+                                  initialValue: state.registrationRegModel.email,
                                   decoration: InputDecoration(
                                     labelText: "Email Address",
                                     border: OutlineInputBorder(),
@@ -221,8 +132,7 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                                 ),
                                 FormBuilderTextField(
                                   name: "mobile number",
-                                  initialValue:
-                                      state.registrationRegModel.phoneNumber,
+                                  initialValue: state.registrationRegModel.phoneNumber,
                                   decoration: InputDecoration(
                                     labelText: "Mobile Number",
                                     border: OutlineInputBorder(),
@@ -244,16 +154,12 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                                     labelText: 'Select Country',
                                     border: OutlineInputBorder(),
                                   ),
-                                  items: countries
-                                      .map((country) => DropdownMenuItem(
-                                          value: country, child: Text(country)))
-                                      .toList(),
+                                  items: countries.map((country) => DropdownMenuItem(value: country, child: Text(country))).toList(),
                                   onChanged: (value) {
                                     setState(() {
                                       selectedCountry = value;
                                       selectedCity = null;
-                                      _formKey.currentState?.fields['city']
-                                          ?.reset();
+                                      _formKey.currentState?.fields['city']?.reset();
                                     });
                                   },
                                   validator: FormBuilderValidators.required(),
@@ -268,8 +174,7 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                                     labelText: 'Select City',
                                     border: OutlineInputBorder(),
                                   ),
-                                  items: (selectedCountry != null &&
-                                          cities[selectedCountry] != null)
+                                  items: (selectedCountry != null && cities[selectedCountry] != null)
                                       ? cities[selectedCountry]!
                                           .map(
                                             (city) => DropdownMenuItem(
@@ -284,77 +189,39 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                                 SizedBox(
                                   height: 16.0,
                                 ),
-                                BlocBuilder<RegistrationBloc,
-                                    RegistrationState>(
+                                BlocBuilder<RegistrationBloc, RegistrationState>(
                                   builder: (context, state) {
                                     return ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
-                                        backgroundColor: Color(0xff931158),
-                                        minimumSize:
-                                            const Size(double.infinity, 48.0),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
+                                        minimumSize: const Size(double.infinity, 48.0),
                                       ),
-                                      onPressed: state.status ==
-                                              RegistrationStatus.loading
+                                      onPressed: state.status == RegistrationStatus.loading
                                           ? null
                                           : () {
-                                              if (_formKey.currentState!
-                                                  .saveAndValidate()) {
-                                                final formData = _formKey
-                                                    .currentState!.value;
+                                              if (_formKey.currentState!.saveAndValidate()) {
+                                                final formData = _formKey.currentState!.value;
 
-                                                log.d(
-                                                    "Form Submitted: $formData");
-                                                context
-                                                    .read<RegistrationBloc>()
-                                                    .add(SubmitRegistration(
-                                                        formData));
+                                                log.d("Form Submitted: $formData");
+                                                context.read<RegistrationBloc>().add(SubmitRegistration(formData));
                                               } else {
-                                                log.e(
-                                                    "Form validation failed! Please fill all fields correctly.");
+                                                log.e("Form validation failed! Please fill all fields correctly.");
                                               }
                                             },
-                                      child: state.status ==
-                                              RegistrationStatus.loading
+                                      child: state.status == RegistrationStatus.loading
                                           ? CircularProgressIndicator(
-                                              color: Color(0xff931158),
+                                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                                             )
                                           : Text(
                                               "Register",
-                                              style: TextTheme.of(context)
-                                                  .bodyLarge
-                                                  ?.copyWith(
+                                              style: TextTheme.of(context).bodyLarge?.copyWith(
                                                     color: Colors.white,
                                                   ),
                                             ),
                                     );
                                   },
                                 ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Already a Member?"),
-                                      SizedBox(
-                                        width: 10.0,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          GoRouter.of(context).go('/');
-                                        },
-                                        child: Text(
-                                          "Login",
-                                          style: TextStyle(
-                                              color: Color(0xff931158),
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
                               ],
                             ),
                           ),
@@ -363,6 +230,25 @@ class _RegistrationMobileState extends State<RegistrationMobile> {
                     ),
                   ),
                 ),
+                Row(
+                  spacing: 10.0,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text("Already a Member?"),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        GoRouter.of(context).go('/');
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(color: Color(0xff931158), fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           );
