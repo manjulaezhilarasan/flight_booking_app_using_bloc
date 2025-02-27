@@ -36,7 +36,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     log.d("LoginPageBloc::_onChangeFormValue::formValues:${event.formValues}");
     emit(state.copyWith(status: LoginStatus.changing));
     LoginReqModel loginReqModel = LoginReqModel.fromMap(event.formValues);
-    emit(state.copyWith(status: LoginStatus.changed, loginReqModel: loginReqModel));
+    emit(state.copyWith(
+        status: LoginStatus.changed, loginReqModel: loginReqModel));
   }
 
   Future<void> _onSubmitLogin(
@@ -46,11 +47,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(state.copyWith(status: LoginStatus.loading));
     try {
       log.d("LoginPageBloc::_onSubmitLogin::$event");
-      await Future.delayed(Duration(seconds: 2));
-      if (state.loginReqModel?.email == "test@example.com" && state.loginReqModel?.password == "password") {
-        emit(state.copyWith(status: LoginStatus.success, message: "Login Successfull."));
+      await Future.delayed(Duration(seconds: 1));
+
+      if (state.loginReqModel?.email == "test@example.com" &&
+          state.loginReqModel?.password == "password") {
+        emit(state.copyWith(
+            status: LoginStatus.success, message: "Login Successfull."));
       } else {
-        emit(state.copyWith(status: LoginStatus.failure, message: "Invalid Email or Password"));
+        emit(state.copyWith(
+            status: LoginStatus.failure, message: "Invalid Email or Password"));
       }
     } catch (error) {
       log.e('LoginPageBloc::_onSubmitLogin::Error: $error');

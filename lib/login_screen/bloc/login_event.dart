@@ -17,4 +17,10 @@ class OnChangeFormValue extends LoginEvent {
   List<Object> get props => [formValues];
 }
 
-class SubmitLogin extends LoginEvent {}
+class SubmitLogin extends LoginEvent {
+  final Map<String, dynamic> formValues;
+  const SubmitLogin(this.formValues);
+
+  @override
+  List<Object> get props => [formValues];
+}

@@ -183,30 +183,48 @@ class _LoginMobileState extends State<LoginMobile> {
                                 )),
                           ),
                         ),
-                        BlocBuilder<LoginBloc, LoginState>(
+                        BlocConsumer<LoginBloc, LoginState>(
+                          listener: (context, state) {
+                            if (state.status == LoginStatus.success) {
+                              GoRouter.of(context).go('/home');
+                            } else if (state.status == LoginStatus.failure) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text("Invalid Email or Password")),
+                              );
+                            }
+                          },
                           builder: (context, state) {
-                            return ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xff931158),
-                                minimumSize: const Size(double.infinity, 48.0),
-                              ),
-                              onPressed: state.status == LoginStatus.loading
-                                  ? null
-                                  : () {
-                                      if (_formKey.currentState!
-                                          .saveAndValidate()) {
-                                        context
-                                            .read<LoginBloc>()
-                                            .add(SubmitLogin());
-                                      }
-                                    },
-                              child: state.status == LoginStatus.loading
-                                  ? CircularProgressIndicator(
-                                      color: Colors.white)
-                                  : Text(
-                                      "Login",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                            return BlocBuilder<LoginBloc, LoginState>(
+                              builder: (context, state) {
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xff931158),
+                                    minimumSize:
+                                        const Size(double.infinity, 48.0),
+                                  ),
+                                  onPressed: state.status == LoginStatus.loading
+                                      ? null
+                                      : () {
+                                          if (_formKey.currentState
+                                                  ?.saveAndValidate() ??
+                                              false) {
+                                            final formData =
+                                                _formKey.currentState!.value;
+                                            context
+                                                .read<LoginBloc>()
+                                                .add(SubmitLogin(formData));
+                                          }
+                                        },
+                                  child: state.status == LoginStatus.loading
+                                      ? CircularProgressIndicator(
+                                          color: Colors.white)
+                                      : Text(
+                                          "Login",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                );
+                              },
                             );
                           },
                         ),

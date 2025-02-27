@@ -38,4 +38,7 @@ class LoginReqModel {
       password: map['password'] as String,
     );
   }
+
+  @override
+  String toString() => 'LoginReqModel(email: $email, password: $password)';
 }
